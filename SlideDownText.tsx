@@ -2,25 +2,24 @@ import {View, Text, Animated, StyleSheet} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 
 // https://usehooks.com/usePrevious/
-const usePrevious = value => {
-  const ref = useRef();
+const usePrevious = (value: number) => {
+  const ref = useRef<number>(0);
   useEffect(() => {
     ref.current = value;
   }, [value]);
 
-  if (typeof ref.current === undefined) {
-    return 0;
-  }
-
   return ref.current;
 };
 
-const SlideDownText = ({newValue}) => {
+interface SlideDownProps {
+  newValue: number;
+}
+
+const SlideDownText = ({newValue}: SlideDownProps) => {
   const previousValue = usePrevious(newValue);
   const [lheight, setLHeight] = useState(0);
 
-  const textLayout = e => {
-    console.log(e.nativeEvent.layout.height);
+  const textLayout = (e: any) => {
     setLHeight(e.nativeEvent.layout.height);
   };
 
@@ -29,7 +28,7 @@ const SlideDownText = ({newValue}) => {
   const animations = [animation1, animation2];
 
   useEffect(() => {
-    animations.map((animation, index) => {
+    animations.map((animation, _index) => {
       Animated.timing(animation, {
         toValue: 0,
         duration: 500,
@@ -38,14 +37,14 @@ const SlideDownText = ({newValue}) => {
     });
   }, [newValue, lheight]);
 
-  const getTranslateY = index => {
+  const getTranslateY = (index: number) => {
     return animations[index];
   };
 
   return (
     <View>
       {lheight !== 0 && (
-        <View style={{height: lheight, overflow: 'hidden'}}>
+        <View style={[styles.container, {height: lheight}]}>
           <Animated.View style={{transform: [{translateY: getTranslateY(0)}]}}>
             <Text style={styles.text}>{newValue}</Text>
           </Animated.View>
@@ -65,13 +64,7 @@ const SlideDownText = ({newValue}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    borderColor: 'blue',
-    borderWidth: 1,
-    width: '100%',
+    overflow: 'hidden',
   },
   text: {
     fontSize: 42,
@@ -84,11 +77,6 @@ const styles = StyleSheet.create({
   text3: {
     fontSize: 42,
     color: 'black',
-  },
-  box: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'red',
   },
 });
 
