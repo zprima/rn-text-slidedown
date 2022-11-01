@@ -28,13 +28,18 @@ const SlideDownText = ({newValue}: SlideDownProps) => {
   const animations = [animation1, animation2];
 
   useEffect(() => {
-    animations.map((animation, _index) => {
-      Animated.timing(animation, {
+    Animated.parallel([
+      Animated.timing(animation1, {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
-      }).start();
-    });
+      }),
+      Animated.timing(animation2, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, [newValue, lheight]);
 
   const getTranslateY = (index: number) => {
@@ -45,12 +50,27 @@ const SlideDownText = ({newValue}: SlideDownProps) => {
     <View>
       {lheight !== 0 && (
         <View style={[styles.container, {height: lheight}]}>
-          <Animated.View style={{transform: [{translateY: getTranslateY(0)}]}}>
+          {/* <Animated.View style={{transform: [{translateY: getTranslateY(0)}]}}>
             <Text style={styles.text}>{newValue}</Text>
           </Animated.View>
           <Animated.View style={{transform: [{translateY: getTranslateY(1)}]}}>
             <Text style={styles.text2}>{previousValue}</Text>
-          </Animated.View>
+          </Animated.View> */}
+
+          <Animated.Text
+            style={[
+              styles.text,
+              {transform: [{translateY: getTranslateY(0)}]},
+            ]}>
+            {newValue}
+          </Animated.Text>
+          <Animated.Text
+            style={[
+              styles.text2,
+              {transform: [{translateY: getTranslateY(1)}]},
+            ]}>
+            {previousValue}
+          </Animated.Text>
         </View>
       )}
       {lheight === 0 && (
